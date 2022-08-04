@@ -1,6 +1,6 @@
 <?php
 
-namespace Awesome\Foundation\Traits;
+namespace Awesome\Foundation\Traits\Models;
 
 trait AwesomeModel
 {
