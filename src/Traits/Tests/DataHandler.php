@@ -24,9 +24,9 @@ trait DataHandler
 
     private function checkAssert(
         TestResponse $response,
-        array $structure = [],
-        int $count = null,
-        string $key = null
+        array        $structure = [],
+        int          $count = null,
+        string       $key = null
     ): void
     {
         $response->assertOk();
@@ -38,5 +38,61 @@ trait DataHandler
         if (!is_null($count)) {
             $response->assertJsonCount($count, $key);
         }
+    }
+
+    private function checkErrorAssert(
+        TestResponse $response,
+        string       $errorCode = null,
+        array        $structure = []
+    ): void
+    {
+        if (empty($structure)) {
+            $structure = $this->getDefaultErrorStructure();
+        }
+
+        $this->checkAssert($response, $structure);
+
+        if (!is_null($errorCode)) {
+            $response->assertJson([
+                'error' => 1,
+                'content' => [
+                    'error_code' => $errorCode
+                ]
+            ]);
+        }
+    }
+
+    private function checkSuccessAssert(TestResponse $response): void
+    {
+        $this->checkAssert($response, $this->getDefaultSuccessStructure());
+
+        $response->assertJson([
+            'error' => 0,
+            'content' => [
+                'success' => true
+            ]
+        ]);
+    }
+
+    private function getDefaultSuccessStructure(): array
+    {
+        return [
+            'error',
+            'content' => [
+                'success'
+            ]
+        ];
+    }
+
+    private function getDefaultErrorStructure(): array
+    {
+        return [
+            'error',
+            'content' => [
+                'error_code',
+                'error_message',
+                'error_data'
+            ]
+        ];
     }
 }
