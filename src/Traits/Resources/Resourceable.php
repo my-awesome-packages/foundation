@@ -2,14 +2,16 @@
 
 namespace Awesome\Foundation\Traits\Resources;
 
+use Carbon\Carbon;
+
 trait Resourceable
 {
-    protected function string($value): ?string
+    protected function string(mixed $value): ?string
     {
         return (string)$value ?: null;
     }
 
-    protected function int($value): ?int
+    protected function int(mixed $value): ?int
     {
         if (is_numeric($value)) {
             return (int)$value;
@@ -18,7 +20,7 @@ trait Resourceable
         return null;
     }
 
-    protected function float($value): ?float
+    protected function float(mixed $value): ?float
     {
         if (is_numeric($value)) {
             return (float)$value;
@@ -27,13 +29,22 @@ trait Resourceable
         return null;
     }
 
-    protected function bool($value): bool
+    protected function bool(mixed $value): bool
     {
         return (bool)$value;
     }
 
-    protected function array($items): array
+    protected function array(mixed $items): array
     {
         return (array)$items;
+    }
+    
+    protected function timestamp(mixed $value): ?int
+    {
+        if (is_string($value)) {
+            $value = (int)(new Carbon($value))->isoFormat('x');
+        };
+
+        return (int)$value ?: null;
     }
 }
